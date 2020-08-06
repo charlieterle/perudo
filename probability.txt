@@ -1,0 +1,105 @@
+Charles Dieterle
+Perudo probability explanations
+
+This is an explanation of the probability calculations used in
+the Perudo game.
+
+I took formulas for dice roll probabilities from the
+dice probability calculator and the combination calculator pages on
+the website onmicalculator.com
+
+https://www.omnicalculator.com/statistics/dice
+https://www.omnicalculator.com/statistics/combination
+
+The 4 indented formulas that follow are taken directly from the website
+
+The following is a formula for the probability of rolling exactly
+r dice with a given value, where n = total number of dice,
+and p = (total sides on a die)
+
+    P(X=r) = nCr * pʳ * (1-p)ⁿ⁻ʳ
+    where
+    nCr = n!/(r!(n-r)!)
+
+The following example is the probability of rolling exactly 2 of any
+given value with a set of seven twelve-sided dice
+
+    P(X=2) = 21 * (1/12)² * (11/12)⁵ = 0.09439
+
+To get the probability of rolling AT LEAST r dice with a given value,
+add up the probabilities of all possible values of X >= r.
+
+The following example is the probability of rolling at least 2 of any
+given value with a set of seven twelve-sided dice
+
+    P = P(X=2) + P(X=3) + P(X=4) + P(X=5) + P(X=6) + P(X=7) = 0.11006
+
+------------------------------------------------------------
+
+Taking these formulas and applying them to Perudo, we get:
+
+n = the number of dice that cannot be seen by the player
+r = the quantity of the current bet minus the number of dice in the player's
+    cup that are either equal to 1 or the die value of the current bet
+p = 1/3 if the die value of the current bet is greater than or equal to 2,
+    1/6 if the die value of the current bet equals 1
+
+Note:
+  - The values for p assume 6-sided dice. This can be easily changed to any
+    number of sides.
+  - The value of n does not include dice that the player have, because the
+    player knows what values those dice are, therefore there is no
+    probability involved.
+
+With this information, we can determine the probability that any given
+bet will be true, and thus determine the best move out of the available
+set of moves.
+
+In standard Perudo (without Calza or Palifico), the available set of moves
+is as follows, with num representing die value and total representing quantity:
+    - dudo
+    - bet with num += 1 or more (not possible if num == 6)
+    - bet with total += 1
+    - bet with num = 1 and total = total / 2, rounding up
+        (only available if current bet has num > 1)
+    - bet with num += 1 or more and total = total * 2 + 1
+        (only available if current bet has num == 1)
+
+Note that in the "bet with total += 1" option, I am ignoring the possibility
+that a player can raise the total by more than one, because this will always
+yield a lower probability of success. Nonetheless, raising the total by more
+than 1 will occasionally be the best play in a game of Perudo when you take into
+account that after making a safe bet, the probability that you will bet again
+in that round rises, which lowers your chances of success in that round.
+
+------------------------------------------------------------
+
+Explanation of the "dudo dial":
+
+On the surface, the probability that a dudo call will be successful is 1 - P(bet),
+where P(bet) is the probability of the current bet's success. However, this
+formula does not work well in practice because the previous player's bet is
+usually a signal of what is in their own hand. Therefore, I have introduced
+a "dudo dial" into the calculation, which was derived from doing simulations
+of 100-1000 games at a time and comparing the avg calculated success of a dudo
+call with the avg ACTUAL success of the dudo call. I found that using the naive
+formula above, the calculated rate of success for dudo calls was around 62%, but
+the actual success rate was only about 42%. These numbers apply to games with
+6 players and 5 dice per player.
+
+To use the dudo dial, I use the formula P(dudo) = 1 - dudo_dial - P(bet)
+This formula just brings down the calculated probability of a dudo call to be
+more in line with what is likely, assuming the previous player made a safe bet,
+i.e., their bet reflects the dice they have in their cup. For the above-mentioned
+scenario, a dudo dial of .22 will make the calculated and actual success rates
+for dudo calls converge to about 52%.
+
+After more simulations with different numbers of players, I realized that
+the actual success rate of dudo calls increases when there are more players,
+and decreases when there are few players. After seeing this, I realized this
+occurs because bets can be made with more confidence when there are fewer
+players because each player holds a larger share of the total number of dice
+in play. Thus, having a single dudo_dial for an entire game is not ideal,
+because as players drop out, the actual probability of success for a dudo drops.
+However, for now I have settled with this "blunt weapon", and I plan to make
+the dudo dial a more in-depth calculation.

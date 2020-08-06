@@ -1,0 +1,79 @@
+Perudo, also known as Liar's Dice, is a multiplayer game played with dice.
+At the beginning of the game, every player gets 5 dice.
+Each round, one player loses one of his/her dice.
+The goal is to be the last player left with dice.
+
+Here is how a single round of Perudo is played:
+
+  Each player takes all of their dice and rolls them. Each player can then
+  only see his/her own dice. They see how many dice each other player has,
+  but not what each die roll is. In real life, this is done by placing
+  the dice in a cup and shaking it, rather than actually rolling them.
+
+  A player begins the round by making a bet. The first player to bet is the
+  player that lost a die in the previous round. The first player to bet in
+  the whole game is chosen arbitrarily.
+
+  A bet has two components: a die number (num), and a quantity of dice (total).
+  When a player makes a bet, he/she is effectively stating, "I think that
+  there are at least this quantity of this die number on the table."
+
+  The next player in the circle must choose between making another bet or
+  calling "dudo" ("I doubt" in Spanish) on the previous player's bet.
+
+  If a player chooses to make another bet, their bet must be higher in quantity
+  or in die number than the previous bet. For example, if the previous bet was
+  num = 4 and total = 8, then they could bet num = 5 and total = 9
+  (or total = 10, 11, etc.), or they could bet num = 5 (or 6) and total = 8.
+
+  A bet cannot raise both the num and the total.
+
+  If "dudo" is called, all dice are revealed, and the accuracy of the previous
+  player's bet is examined. If it turns out that their bet was correct, i.e.,
+  that there are at least the stated total of the stated num,
+  then the player that called "dudo" loses a die. Otherwise, the player that
+  made the bet loses a die.
+
+  Important exceptions to the rules above:
+
+  Exception 1:
+  Dice with a number of 1 are "wildcards." That is, they are always counted
+  as part of the total when a player calls dudo. If the table reveals seven 3s
+  and four 1s, the total of 3s is eleven, NOT seven. This changes the rules for
+  betting as well, as noted in the following exceptions.
+
+  Exception 2A:
+  When betting, a player has a third option in addition to calling dudo
+  or making a bet that is higher in either num or total. The third option is
+  to change the num to 1 and halve the total, rounding up when the total is odd.
+  For example, if the previous bet was num = 4 and total = 8, the next player
+  can also bet num = 1 and total = 4. If the previous bet was num = 4 and
+  total = 9, the next player can bet num = 1 and total = 5.
+
+  Exception 2B:
+  If a player bets with num = 1, then the next player's bet must follow the same
+  rules as before, except if he/she desires to increase num rather than total,
+  the total must be at least 2 times the current total plus 1. For example,
+  if the previous bet was num = 1 and total = 4, the next bet could be
+  num = 2 and total = 9. Alternatively, the next bet could just as well be
+  num = 1 and total = 5.
+
+
+  Optional variations:
+
+  Palifico round:
+  When a player loses their second-to-last die, the next round starts with the
+  same player making a bet, but the entire round is played with the same num.
+  That is, if the player with one die bets num = 3 to begin, all subsequent bets
+  must be bets of num = 3, and therefore the only way to make a bet is to raise
+  the total. Palifico rules only last for one round, no matter the outcome.
+  This rule does not apply when there are only two players left in the game.
+
+  Calza:
+  In addition to calling dudo or betting, a third option may be added, called
+  "calza." A player that calls calza is betting that the current bet is exactly
+  correct, that is, the num and total values for the table are spot on. A player
+  may call calza at any time, except of course if the first bet has not
+  occurred yet. If a player's calza call is correct, they regain a die, though
+  no player can have more than 5 dice in their cup. If the call is incorrect,
+  the player loses a die and starts the next round.
