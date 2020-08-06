@@ -2,7 +2,7 @@
 
 Implementation of the dice game Perudo (AKA Liar's Dice), along with a game simulator and other files
 
-Please read the .txt files for an explanation of the rules and probability calculations used in the source code
+Please read the .txt files for a explanations of the game rules and the probability calculations used in the source code
 
 As of August 6 2020, the source code files include:
 perudo.py - gameplay definitions
