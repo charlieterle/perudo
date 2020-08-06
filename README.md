@@ -11,7 +11,7 @@ As of August 6 2020, the source code files include:
 
   - move_probability.py: computes and prints the probability of success of all possible moves on a given turn of Perudo.
 
-  - simulation.py: simulates multiple games of Perudo using all computer players, and calculates/prints statistics on the games.
+  - simulation.py: simulates multiple games of Perudo using all computer players, and prints statistics from the simulations.
 
 I am planning to include the following updates at a later date:
 
