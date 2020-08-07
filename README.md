@@ -19,4 +19,4 @@ I am planning to include the following updates at a later date:
 
   - update to dudo_dial: this feature is currently implemented to calculate probability of dudo calls, but it doesn't work well in all situations. see probability.txt for an in-depth explanation
 
-  - add palifico and calza: these gameplay features aren't implemented yet, but are very common. palifico will probably part of normal gameplay, and calza will most likely be an option. see rules.txt for explanation of these features.
+  - add palifico and calza: these gameplay features aren't implemented yet, but are very common. palifico will probably be part of normal gameplay, and calza will most likely be an option. see rules.txt for explanation of these features.
