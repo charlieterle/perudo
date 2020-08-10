@@ -179,8 +179,6 @@ class Game():
         """
         Print the probability of each possible move succeeding
 
-        args: current_game - a game object
-
         The possible moves are:
             - dudo
             - bets by changing the number
@@ -210,13 +208,8 @@ class Game():
         Update the game state by making the move with highest probability of success
 
         Note:
-            At this point, this method only considers the dice in the current
-            player's cup, and does not take into account the fact that the previous
-            player likely has one or more of the die number that he/she bet on.
-            Therefore, dudo is not quite as likely to succeed as indicated in this
-            calculation. Simulation of games using this betting algorithm is necessary
-            to determine how to tweak the probabilities so that the actual best
-            move is played each time.
+            dudo_dial is used to determine dudo's success, but this feature is
+            a work in progress. See a full explanation in probability.txt
         """
 
         highest_prob = 0
@@ -241,9 +234,10 @@ def get_probability(dice_count, player_cup, a_bet):
     """
     Calculate the probability of a single bet succeeding
 
-    args: dice_count - int, the total number of dice in play
-          player_cup - list of ints, the current dice values a player has
-          current_bet - bet object, with attributes num and total
+    Arguments:
+        dice_count - int, the total number of dice in play
+        player_cup - list of ints, the current dice values a player has
+        current_bet - bet object, with attributes num and total
 
     returns a float
     """
@@ -278,9 +272,10 @@ def get_all_bets(dice_count, cup, bet_state):
     """
     Retrieve all potential new bets and their probabilities
 
-    args: dice_count - an int representing the total number of dice in play
-          cup - a list of ints representing the current player's cup
-          bet_state - a Bet object
+    Arguments:
+        dice_count - an int representing the total number of dice in play
+        cup - a list of ints representing the current player's cup
+        bet_state - a Bet object
 
     returns a list of tuples of form (b, prob),
         where b is a Bet object and prob is a float
