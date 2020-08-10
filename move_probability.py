@@ -90,15 +90,14 @@ def main():
     move_list = perudo.get_all_bets(dice_count, cup, bet)
 
     print("Potential moves and probabilities of success:")
-    if bet != None:
-        dudo_prob = 1 - perudo.get_probability(dice_count, cup, bet)
-        dudo_prob = dudo_prob * 100
-        print(f"Dudo: {dudo_prob:.1f}%")
 
     for bet_prob in move_list:
         prob = bet_prob[1] * 100
-        print(f"Bet of Number {bet_prob[0].num} and",
-              f"Quantity {bet_prob[0].total}: {prob:.1f}%")
+        if type(bet_prob[0]) == str:
+            print(f"{bet_prob[0]}: {bet_prob[1]}")
+        else:
+            print(f"Bet of Number {bet_prob[0].num} and",
+                  f"Quantity {bet_prob[0].total}: {prob:.1f}%")
 
 if __name__ == "__main__":
     main()
