@@ -321,8 +321,7 @@ def get_all_bets(dice_count, cup, bet_state):
     quantity = bet_state.total
 
     # first, probability of success of dudo
-    dudo_prob = 1 - DUDO_DIAL - get_probability(self.dice_count, \
-                        self.get_current_player().cup, self.current_bet)
+    dudo_prob = 1 - DUDO_DIAL - get_probability(dice_count, cup, bet_state)
     move_list.append(("dudo", dudo_prob))
 
     # bet of total += 1. Note: if quantity == dice_count (unlikely),
