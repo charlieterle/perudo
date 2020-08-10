@@ -19,7 +19,8 @@ class Player():
     """
     A single player in a game of Perudo
 
-    Attributes: cup - a list of ints
+    Attributes:
+        cup - list of ints representing die rolls
     """
 
     # players get a cup and 5 dice
@@ -42,8 +43,9 @@ class Bet():
     """
     A bet in a game of Perudo (a die number and a quantity of dice)
 
-    Attributes: num - the die number
-                total - the quantity of dice
+    Attributes:
+        num - int representing the die number
+        total - int representing the quantity of dice with number num
     """
 
     # creates a bet in a round of Perudo
@@ -59,12 +61,13 @@ class Game():
     """
     A game of Perudo
 
-    Attributes: players - a list of player objects
-                current_bet - a bet object representing the current betting state
-                current_player - an int representing the player whose turn it is
-                round - an int representing which round of the game it is
-                dice_count - an int representing how many dice are in play
-                move_list - a list of (Bet, probability) pairs
+    Attributes:
+        players - list of player objects
+        current_bet - Bet object representing the current betting state
+        current_player - int representing the player whose turn it is
+        round - int representing which round of the game it is
+        dice_count - int representing how many dice are in play
+        move_list - a list of (Bet object, probability) pairs
                     where probability is a float
     """
 
@@ -91,13 +94,8 @@ class Game():
         if num < 1 or num > DIE_SIDES:
             raise BetError(f"Die number must be between 1 and {DIE_SIDES}")
         if total > self.dice_count:
-            try:
-                raise BetError("Dice quantity cannot be greater than the "\
+            raise BetError("Dice quantity cannot be greater than the "\
                                     "total number of dice in play")
-            finally:
-                print(f"current_bet={self.current_bet}, cup={self.get_current_player().cup}")
-                self.print_all_moves()
-                print(f"dice_count={self.dice_count}, new total={total}")
         self.current_bet = Bet(num, total)
         self.set_next_player()
         self.move_list = get_all_bets(self.dice_count, \
