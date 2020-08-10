@@ -228,12 +228,6 @@ class Game():
                 highest_prob = move[1]
                 best_move = move[0]
 
-        if self.current_bet != None:
-            dudo_prob = 1 - DUDO_DIAL - get_probability(self.dice_count, \
-                    self.get_current_player().cup, self.current_bet)
-            if dudo_prob > highest_prob:
-                best_move = "dudo"
-
         if best_move == "dudo":
             self.dudo()
 
@@ -293,8 +287,6 @@ def get_all_bets(dice_count, cup, bet_state):
 
     returns a list of tuples of form (b, prob),
         where b is a Bet object and prob is a float
-
-    Dudo is not included in this: it will be calculated separately
     """
 
     move_list = []
@@ -310,7 +302,6 @@ def get_all_bets(dice_count, cup, bet_state):
             quantity = 1
 
         # get probability of success for a bet where num = 1
-        # this block is only executed on the first move of a round
         prob = get_probability(dice_count, cup, Bet(1, quantity))
         move_list.append((Bet(1, quantity), prob))
 
@@ -318,7 +309,6 @@ def get_all_bets(dice_count, cup, bet_state):
         quantity = round(2 * dice_count / DIE_SIDES -1)
         if quantity <= 0:
             quantity = 1
-
         for num in range(2, DIE_SIDES + 1):
             prob = get_probability(dice_count, cup, Bet(num, quantity))
             move_list.append((Bet(num, quantity), prob))
@@ -329,6 +319,11 @@ def get_all_bets(dice_count, cup, bet_state):
     # so get the next bets with bet_state in mind
     die_number = bet_state.num
     quantity = bet_state.total
+
+    # first, probability of success of dudo
+    dudo_prob = 1 - DUDO_DIAL - get_probability(self.dice_count, \
+                        self.get_current_player().cup, self.current_bet)
+    move_list.append(("dudo", dudo_prob))
 
     # bet of total += 1. Note: if quantity == dice_count (unlikely),
     # then this bet always has a probability of 0, so it will be skipped.
