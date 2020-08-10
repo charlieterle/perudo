@@ -228,16 +228,15 @@ class Game():
                 highest_prob = move[1]
                 best_move = move[0]
 
-        if best_move == "dudo":
+        if best_move == "Dudo":
             self.dudo()
 
             # The following line is included for the simulation file to gather
             # data about forecasted dudo success vs. actual dudo success
-            return dudo_prob
+            return highest_prob
 
         else:
             self.make_bet(best_move.num, best_move.total)
-
 
 
 def get_probability(dice_count, player_cup, a_bet):
@@ -322,7 +321,7 @@ def get_all_bets(dice_count, cup, bet_state):
 
     # first, probability of success of dudo
     dudo_prob = 1 - DUDO_DIAL - get_probability(dice_count, cup, bet_state)
-    move_list.append(("dudo", dudo_prob))
+    move_list.append(("Dudo", dudo_prob))
 
     # bet of total += 1. Note: if quantity == dice_count (unlikely),
     # then this bet always has a probability of 0, so it will be skipped.
