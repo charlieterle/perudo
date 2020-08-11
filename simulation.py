@@ -3,7 +3,6 @@
 # See rules.txt for an English language explanation of the rules
 
 import perudo
-import random
 
 def single_game(player_count):
     """
