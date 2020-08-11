@@ -5,7 +5,7 @@ Implementation of the dice game Perudo (AKA Liar's Dice), along with a game simu
 
 Please read the .txt files for explanations of the game rules and the probability calculations used in the source code.
 
-As of August 6 2020, the source code files include:
+As of August 10 2020, the source code files include:
 
   - perudo.py: gameplay definitions.
 
@@ -19,4 +19,4 @@ I am planning to include the following updates at a later date:
 
   - update to dudo_dial: this feature is currently implemented to calculate probability of dudo calls, but it doesn't work well in all situations. see probability.txt for an in-depth explanation
 
-  - add palifico and calza: these gameplay features aren't implemented yet, but are very common. palifico will probably be part of normal gameplay, and calza will most likely be an option. see rules.txt for explanation of these features.
+  - add calza: calza will most likely be an option for gameplay. see rules.txt for explanation of this feature.
