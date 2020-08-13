@@ -38,6 +38,9 @@ class Player():
         for i in range(len(self.cup)):
             self.cup[i] = random.randint(1, DIE_SIDES)
 
+    def __str__(self):
+        return str(self.cup)
+
 
 class Bet():
     """
@@ -93,15 +96,42 @@ class Game():
 
     # make a bet
     def make_bet(self, num, total):
-        # check for illegal bets first
+        # check for non-sensical bets
         if num < 1 or num > DIE_SIDES:
-            raise BetError(f"Die number must be between 1 and {DIE_SIDES}")
+            raise BetError(f"ILLEGAL BET: Die number must be between 1 and {DIE_SIDES}")
         if total > self.dice_count:
-            raise BetError("Dice quantity cannot be greater than the "\
+            raise BetError("ILLEGAL BET: Dice quantity cannot be greater than the "\
                                     "total number of dice in play")
         if self.current_bet:
             if self.palifico and num != self.current_bet.num:
-                raise BetError("Cannot change die number of bet in a palifico round")
+                raise BetError("ILLEGAL BET: Cannot change die number of bet in a palifico round")
+
+        # make sure the bet is valid with respect to the current bet environment
+        if self.current_bet != None:
+            current_num = self.current_bet.num
+            current_total = self.current_bet.total
+            if current_num == 1:
+                if num == 1 and total <= current_total:
+                    raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
+                if num > 1 and total <= current_total * 2:
+                    raise BetError("ILLEGAL BET: If increasing the die value from 1, "\
+                                f"the dice quantity must be at least {current_total * 2 + 1}.")
+            else:
+                if num == 1:
+                    if current_total % 2 == 1:
+                        ones_total = int(current_total / 2) + 1
+                    else:
+                        ones_total = int(current_total / 2)
+                    if total < ones_total:
+                        raise BetError("ILLEGAL BET: If decreasing the die value to 1, "\
+                                    f"the bet quantity must be at least {ones_total}.")
+                else:
+                    if num < current_num:
+                        raise BetError("ILLEGAL BET: Cannot bet on a die number less "\
+                                        "than the current bet, except for 1.")
+                    elif value <= current_value and num == current_num:
+                        raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
+
 
         # bet is legal, so change the current_bet for the game
         self.current_bet = Bet(num, total)
