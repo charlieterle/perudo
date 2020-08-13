@@ -33,9 +33,17 @@ def main():
         print(f"Your cup: {my_game.players[human]}")
         sleep(2)
 
-        # get first bet if human is first
         if my_game.current_player == human:
             print("You are the first to bet this round.")
+        else:
+            print(f"First to bet is Computer {my_game.current_player + 1}.")
+
+        # TODO
+        # create loop that goes until dudo is called
+        # indent the following 40ish lines of code accordingly
+
+        # get bet on human's turn
+        if my_game.current_player == human:
             while True:
                 # get the bet from the human
                 bet_num, bet_total = get_human_bet(my_game)
@@ -43,7 +51,7 @@ def main():
                 # confirm the bet was as intended
                 confirm_bet = input(f"You input a bet of Die Number: {bet_num}"\
                                     f" and Quantity: {bet_total}.\n"\
-                                    "Is this correct? "
+                                    "Is this correct? "\
                                     "Enter 'y' for yes, 'n' for no.\n")
 
                 if confirm_bet not in ["y", "n", "Y", "N"]:
@@ -59,18 +67,21 @@ def main():
                 else:  # attempt the bet; loop back if invalid
                     try:
                         my_game.make_bet(bet_num, bet_total)
-                    except HOW DO I DO THIS PART???
-
+                        print("You bet
+                        break
+                    except BetError as err:
+                        print(err)
                         continue
 
-            # TODO
+        break
 
 
-        # get first bet if human is not first
+            # get first bet if human is not first
         else:
-            print(f"First to bet is player {my_game.current_player + 1}.")
-        while
-        if my_game.current_player == human:
+            my_game.make_safest_move()
+
+        # TODO
+        # check for end of game, terminate program if end
 
 
 def get_human_bet(game):
