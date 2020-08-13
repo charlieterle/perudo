@@ -132,7 +132,6 @@ class Game():
                     elif value <= current_value and num == current_num:
                         raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
 
-
         # bet is legal, so change the current_bet for the game
         self.current_bet = Bet(num, total)
         self.set_next_player()
