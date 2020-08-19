@@ -6,11 +6,13 @@ import perudo
 from time import sleep
 
 def main():
-
     print("You have started a game of Perudo!\n")
     sleep(1)
-    print(f"Each player will have {perudo.DICE_PER_PLAYER} {perudo.DIE_SIDES}-sided dice.\n")
+
+    print("Each player starts with a cup containing "\
+        f"{perudo.DICE_PER_PLAYER} {perudo.DIE_SIDES}-sided dice.\n")
     sleep(1)
+
     # get the total dice count and the number of dice in the player's cup
     while True:
         try:
@@ -34,8 +36,25 @@ def main():
     while True:
         print(f"Round {my_game.round}, start!\n")
         sleep(1)
+
+        if my_game.palifico:
+            print("This round is a palifico round.\n")
+            sleep(1)
+
         print(f"There are {my_game.dice_count} dice in play, including yours.\n")
         sleep(1)
+
+        # print how many dice the player before the human has (helps in betting)
+        player_before_human = human - 1
+        while my_game.players[player_before_human].cup == []:
+            player_before_human -= 1
+        cup_size = len(my_game.players[player_before_human].cup)
+        if cup_size == 1:
+            print("The player that bets before you has 1 die in their cup.\n")
+        else:
+            print(f"The player that bets before you has {cup_size} dice in their cup.\n")
+        sleep(1)
+
         print(f"You rolled your dice and got: {my_game.players[human].cup}\n")
         sleep(2.5)
 
