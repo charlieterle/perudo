@@ -15,7 +15,6 @@ def single_game(player_count):
         - Fraction of dudo calls that were correct (i.e., the bet was wrong)
         - Avg calculated probability of dudo success
         - Avg number of bets per round
-        - Number of rounds in the game
     """
 
     my_game = perudo.Game(player_count)
@@ -45,10 +44,10 @@ def simulator(player_count, num_trials):
         player_count (int) - number of players in the game
         num_trials (int) - number of games simulated
 
-    Return the following statistics:
-        - Avg fraction of dudo calls that were correct
-        - Avg number of bets per round
-        - Avg number of rounds per game
+    Print the following statistics:
+        - Actual success rate of dudo calls
+        - Calculated success rate of dudo calls
+        - Avg number of bets per round of play
     """
 
     dudo_actual = []
