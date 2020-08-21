@@ -17,7 +17,7 @@ def main():
     while True:
         try:
             player_count = int(input("How many computer players do you " \
-                                    "want to play against?\n"))
+                                        "want to play against?\n"))
         except ValueError:
             print("You must enter a numeric value.")
             continue
@@ -41,7 +41,8 @@ def main():
             print("This round is a palifico round.\n")
             sleep(1)
 
-        print(f"There are {my_game.dice_count} dice in play, including yours.\n")
+        print(f"There are {my_game.dice_count} dice in play, "\
+                "including yours.\n")
         sleep(1)
 
         # print how many dice the player before the human has (helps in betting)
@@ -52,7 +53,8 @@ def main():
         if cup_size == 1:
             print("The player that bets before you has 1 die in their cup.\n")
         else:
-            print(f"The player that bets before you has {cup_size} dice in their cup.\n")
+            print(f"The player that bets before you has {cup_size} "\
+                    "dice in their cup.\n")
         sleep(1)
 
         print(f"You rolled your dice and got: {my_game.players[human].cup}\n")
@@ -61,7 +63,8 @@ def main():
         if my_game.current_player == human:
             print("You are the first to bet this round.\n")
         else:
-            print(f"Player {my_game.current_player + 1} is the first to bet this round.\n")
+            print(f"Player {my_game.current_player + 1} is the "\
+                    "first to bet this round.\n")
         sleep(2)
 
         previous_player = None
@@ -107,70 +110,65 @@ def main():
             # this block will need significant changes to implement calza
             if my_game.current_bet == None:
                 # next_player will start the next round
+                # note next_player isn't necessarily the loser of the dudo call
                 next_player = my_game.current_player
 
                 # human player called dudo
                 if betting_player == human:
 
-                    # human called dudo and lost, losing their last die
                     if my_game.players[human].cup == []:
-                        print(f"You called dudo and lost!\n"\
-                            "You lost your last die and were eliminated from the game.\n")
+                        print("You called dudo and lost!\n"\
+                                "You were eliminated from the game.")
                         return  # end of game
 
-                    # human called dudo and won, knocking out previous player
                     elif my_game.players[previous_player].cup == []:
                         print("You called dudo and won!\n"\
-                            f"Player {previous_player + 1} lost their last die and "\
-                            "were eliminated from the game.\n")
+                                f"Player {previous_player + 1} was "\
+                                "eliminated from the game.\n")
 
-                    # human called dudo and lost, but remains in the game
                     elif next_player == human:
                         print(f"You called dudo and lost!\n"\
-                            "You lost one die.\n")
+                                "You lost one die.\n")
 
-                    # human called dudo and won, and the loser remains in the game
                     else:
                         print("You called dudo and won!\n"\
-                            f"Player {previous_player + 1} lost one die.\n")
+                                f"Player {previous_player + 1} lost one die.\n")
 
                     sleep(2)
 
                 # computer player called dudo
                 else:
-                    # computer called dudo and lost, losing their last die
                     if my_game.players[betting_player].cup == []:
-                        print(f"Player {betting_player + 1} called dudo and lost!\n"\
-                            "They lost their last die and were eliminated from the game.\n")
+                        print(f"Player {betting_player + 1} called dudo and "\
+                                "lost!\nThey were "\
+                                "eliminated from the game.\n")
 
-                    # computer called dudo and won, knocking out previous player
                     elif my_game.players[previous_player].cup == []:
-                        print(f"Player {betting_player + 1} called dudo and won!")
+                        print(f"Player {betting_player + 1} called dudo "\
+                                "and won!")
 
                         if previous_player == human:
                             print("You lost your last die. Game Over!")
                             return  # end of game
 
                         else:
-                            print(f"Player {previous_player + 1} lost their last die.\n"\
-                                "They were eliminated from the game.\n")
+                            print(f"Player {previous_player + 1} was "
+                                    "eliminated from the game.\n")
 
-                    # computer called dudo and won
                     elif betting_player != next_player:
-                        print(f"Player {betting_player + 1} called dudo and won!")
+                        print(f"Player {betting_player + 1} called dudo "\
+                                "and won!")
 
-                        # human lost a die but remains in the game
                         if next_player == human:
                             print("You lost one die.\n")
 
-                        # a computer player lost a die but remains in the game
                         else:
-                            print(f"Player {previous_player + 1} lost one die.\n")
+                            print(f"Player {previous_player + 1} lost "\
+                                    "one die.\n")
 
-                    # computer called dudo and lost, but remains in the game
                     else:
-                        print(f"Player {betting_player + 1} called dudo and lost!\n"\
-                            "They lost one die.\n")
+                        print(f"Player {betting_player + 1} called dudo "\
+                                "and lost!\nThey lost one die.\n")
 
                     sleep(2)
 
@@ -192,7 +190,8 @@ def main():
                 sleep(2)
 
         if my_game.dice_count == len(my_game.players[human].cup):
-            print("You are the last player with dice left. Congratulations, you win!")
+            print("You are the last player with dice left. "\
+                    "Congratulations, you win!")
             return  # end of game
 
 
@@ -213,8 +212,8 @@ def get_human_bet(game):
 
     while True:
         move_type = input("Type 'dudo' to call dudo, or 'bet' to make a bet,\n"\
-                    "then hit the Return key.\n")
-                    # add calza option once calza is implemented
+                            "then hit the Return key.\n")
+                            # add calza option above once calza is implemented
         move_type = move_type.lower()
         if move_type not in ["bet", "dudo"]:
             print("Your input was invalid. Please try again.")
