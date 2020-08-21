@@ -23,16 +23,24 @@ def single_game(player_count):
     total_bets = 0
     rounds = 0
 
+    # need to keep track of previous player to get accurate dudo measurement
+    previous_player = None
+
     while my_game.players_left() > 1:
         betting_player = my_game.current_player
         safest_move = my_game.make_safest_move()
+
         if type(safest_move) == float:
             dudo_prob_sum += safest_move
             rounds += 1
-            if betting_player != my_game.current_player:
+            if betting_player != my_game.current_player and  \
+            my_game.players[previous_player].cup != []:
                 successful_dudos += 1
+            previous_player = None
+
         else:
             total_bets += 1
+            previous_player = betting_player
 
     return successful_dudos / rounds, dudo_prob_sum / rounds, total_bets / rounds
 
@@ -65,4 +73,4 @@ def simulator(player_count, num_trials):
         f"Avg number of bets per round: {sum(bet_numbers) / num_trials}")
 
 # change the arguments below to desired player count and number of games
-simulator(6, 100)
+simulator(6, 500)
