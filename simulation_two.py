@@ -14,37 +14,43 @@ def single_game(player_count):
         player_count (int) - number of players
 
     Returns:
-        dudo_list - list of 3-tuples of the form (dudo, dice_count, cup_size) where:
-            - dudo is a bool representing the success of that particular dudo call
-                (True is success, False is failure)
-            - dice_count is the total number of dice in play in the game
-            - cup_size is the number of dice in the previous player's cup
-
+        dudos - list of bools (True for successful dudo call, False for failure)
+        dice_counts - list of ints (total number of dice in play in the game)
+        betting_cups - list of ints (num of dice in the betting player's cup)
+        previous_cups - list of ints (num of dice in the previous player's cup)
     """
 
     my_game = perudo.Game(player_count)
-    dudo_list = []
+    dudos, dice_counts, previous_cups, betting_cups = [], [], [], []
 
     # start the simulation
     previous_player = None
     while my_game.players_left() > 1:
         betting_player = my_game.current_player
+        bet_cup_len = len(my_game.players[betting_player].cup)
+        if previous_player != None:
+            prev_cup_len = len(my_game.players[previous_player].cup)
         safest_move = my_game.make_safest_move()
 
-        # add a data point to dudo_list
+        # when dudo is called, add data to the lists declared above
         if my_game.current_bet == None:
             if betting_player != my_game.current_player or  \
                                 my_game.players[previous_player].cup == []:
-                dudo_list.append((True, my_game.dice_count,  \
-                                len(my_game.players[previous_player].cup)))
+                dudos.append(True)
             else:
-                dudo_list.append((False, my_game.dice_count,  \
-                                len(my_game.players[previous_player].cup)))
+                dudos.append(False)
+
+            dice_counts.append(my_game.dice_count)
+            betting_cups.append(bet_cup_len)
+            previous_cups.append(prev_cup_len)
+
             previous_player = None
+
+        # in this case, dudo wasn't called, so just continue to the next turn
         else:
             previous_player = betting_player
 
-    return dudo_list
+    return dudos, dice_counts, betting_cups, previous_cups
 
 def simulator(player_count, num_trials):
     """
@@ -60,20 +66,28 @@ def simulator(player_count, num_trials):
         - Avg number of rounds per game
     """
 
-    dudo_actual = []
-    dudo_calculations = []
-    bet_numbers = []
+    dudos, dice_counts, previous_cups, betting_cups = [], [], [], []
 
     for i in range(num_trials):
-        dudo_fraction, dudo_calculated, bet_num = single_game(player_count)
-        dudo_actual.append(dudo_fraction)
-        dudo_calculations.append(dudo_calculated)
-        bet_numbers.append(bet_num)
+        one_game = single_game(player_count)
+        dudos.extend(one_game[0])
+        dice_counts.extend(one_game[1])
+        betting_cups.extend(one_game[2])
+        previous_cups.extend(one_game[3])
 
-    
+    # this is the minimum ratio of one's own dice to total dice in play.
+    # this occurs when the player has 1 die left, and everyone else has 5
+    min_ratio = 1 / (perudo.DICE_PER_PLAYER * player_count - 4)
+
+    # this is the maximum ratio of one's own dice to total dice in play.
+    # this occurs when the player has 5 dice, and the only remaining opponent
+    # has 1 die left
+    max_ratio = 5/6
+
+
 
 # change the arguments below to desired player count and number of games
-simulator(6, 100)
+simulator(6, 10)
 
 
 # basic usage of pyplot
