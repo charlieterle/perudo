@@ -12,8 +12,8 @@ DICE_PER_PLAYER = 5
 # Constant to "dial in" the dudo calls so that their predicted success
 # rate is close to their actual success rate
 # See probability.txt for a complete explanation.
-# This will probably changed in the future to be an attribute of the Game class
-DUDO_DIAL = .22
+# This will probably change in the future to be an attribute of the Game class
+DUDO_DIAL = 0
 
 class Player():
     """
@@ -129,7 +129,7 @@ class Game():
                     if num < current_num:
                         raise BetError("ILLEGAL BET: Cannot bet on a die number less "\
                                         "than the current bet, except for 1.")
-                    elif value <= current_value and num == current_num:
+                    elif total <= current_total and num == current_num:
                         raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
 
         # bet is legal, so change the current_bet for the game
