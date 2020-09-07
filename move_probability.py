@@ -58,13 +58,14 @@ def main():
         if bet_exists not in ["y", "n", "Y", "N"]:
             print("You must enter either 'y' or 'n'")
             continue
-        if bet_exists == "n":
+        if bet_exists == "n" or bet_exists == "N":
             bet = None
             break
         else:
             while True:
                 try:
-                    bet_num = int(input("What is the die value of the bet in play?\n"))
+                    bet_num = int(input("What is the die value of the "\
+                                        "bet in play?\n"))
                 except ValueError:
                     print("You must enter a number.")
                     continue
@@ -75,7 +76,8 @@ def main():
                 break
             while True:
                 try:
-                    bet_total = int(input("What is the dice quantity of the bet in play?\n"))
+                    bet_total = int(input("What is the dice quantity of the "\
+                                            "bet in play?\n"))
                 except ValueError:
                     print("You must enter a number.")
                     continue

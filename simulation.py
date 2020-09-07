@@ -15,7 +15,6 @@ def single_game(player_count):
         - Fraction of dudo calls that were correct (i.e., the bet was wrong)
         - Avg calculated probability of dudo success
         - Avg number of bets per round
-        - Number of rounds in the game
     """
 
     my_game = perudo.Game(player_count)
@@ -24,16 +23,24 @@ def single_game(player_count):
     total_bets = 0
     rounds = 0
 
+    # need to keep track of previous player to get accurate dudo measurement
+    previous_player = None
+
     while my_game.players_left() > 1:
         betting_player = my_game.current_player
         safest_move = my_game.make_safest_move()
+
         if type(safest_move) == float:
             dudo_prob_sum += safest_move
             rounds += 1
-            if betting_player != my_game.current_player:
+            if betting_player != my_game.current_player and  \
+            my_game.players[previous_player].cup != []:
                 successful_dudos += 1
+            previous_player = None
+
         else:
             total_bets += 1
+            previous_player = betting_player
 
     return successful_dudos / rounds, dudo_prob_sum / rounds, total_bets / rounds
 
@@ -45,10 +52,10 @@ def simulator(player_count, num_trials):
         player_count (int) - number of players in the game
         num_trials (int) - number of games simulated
 
-    Return the following statistics:
-        - Avg fraction of dudo calls that were correct
-        - Avg number of bets per round
-        - Avg number of rounds per game
+    Print the following statistics:
+        - Actual success rate of dudo calls
+        - Calculated success rate of dudo calls
+        - Avg number of bets per round of play
     """
 
     dudo_actual = []

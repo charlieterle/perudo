@@ -12,8 +12,9 @@ DICE_PER_PLAYER = 5
 # Constant to "dial in" the dudo calls so that their predicted success
 # rate is close to their actual success rate
 # See probability.txt for a complete explanation.
-# This will probably change in the future to be an attribute of the Game class
-DUDO_DIAL = 0
+
+# This feature will be refined in the future
+DUDO_DIAL = .22
 
 class Player():
     """
@@ -98,24 +99,28 @@ class Game():
     def make_bet(self, num, total):
         # check for non-sensical bets
         if num < 1 or num > DIE_SIDES:
-            raise BetError(f"ILLEGAL BET: Die number must be between 1 and {DIE_SIDES}")
+            raise BetError("ILLEGAL BET: Die number must be between "\
+                            f"1 and {DIE_SIDES}.")
         if total > self.dice_count:
-            raise BetError("ILLEGAL BET: Dice quantity cannot be greater than the "\
-                                    "total number of dice in play")
+            raise BetError("ILLEGAL BET: Dice quantity cannot be greater "\
+                            "than the total number of dice in play.")
         if self.current_bet:
             if self.palifico and num != self.current_bet.num:
-                raise BetError("ILLEGAL BET: Cannot change die number of bet in a palifico round")
+                raise BetError("ILLEGAL BET: Cannot change the die number "\
+                                "of a bet in a palifico round.")
 
-        # make sure the bet is valid with respect to the current bet environment
+        # make sure the bet is valid in the current bet environment
         if self.current_bet != None:
             current_num = self.current_bet.num
             current_total = self.current_bet.total
             if current_num == 1:
                 if num == 1 and total <= current_total:
-                    raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
+                    raise BetError("ILLEGAL BET: Must raise either the "\
+                                    "bet quantity or the die number.")
                 if num > 1 and total <= current_total * 2:
-                    raise BetError("ILLEGAL BET: If increasing the die value from 1, "\
-                                f"the dice quantity must be at least {current_total * 2 + 1}.")
+                    raise BetError("ILLEGAL BET: If increasing the die value "\
+                                    "from 1, the dice quantity must be "\
+                                    f"at least {current_total * 2 + 1}.")
             else:
                 if num == 1:
                     if current_total % 2 == 1:
@@ -123,25 +128,28 @@ class Game():
                     else:
                         ones_total = int(current_total / 2)
                     if total < ones_total:
-                        raise BetError("ILLEGAL BET: If decreasing the die value to 1, "\
-                                    f"the bet quantity must be at least {ones_total}.")
+                        raise BetError("ILLEGAL BET: If decreasing the die "\
+                                        "value to 1, the bet quantity "\
+                                        f"must be at least {ones_total}.")
                 else:
                     if num < current_num:
-                        raise BetError("ILLEGAL BET: Cannot bet on a die number less "\
-                                        "than the current bet, except for 1.")
+                        raise BetError("ILLEGAL BET: Cannot bet on a die "\
+                                        "number less than the current bet, "\
+                                        "except for 1.")
                     elif total <= current_total and num == current_num:
-                        raise BetError("ILLEGAL BET: Must raise either the bet quantity or the die number")
+                        raise BetError("ILLEGAL BET: Must raise either the "\
+                                        "bet quantity or the die number.")
 
         # bet is legal, so change the current_bet for the game
         self.current_bet = Bet(num, total)
         self.set_next_player()
         if self.palifico:
-            self.move_list = get_all_bets(self.dice_count, \
+            self.move_list = get_all_bets(self.dice_count,
                                         self.get_current_player().cup,
                                         self.current_bet,
                                         palifico=True)
         else:
-            self.move_list = get_all_bets(self.dice_count, \
+            self.move_list = get_all_bets(self.dice_count,
                                         self.get_current_player().cup,
                                         self.current_bet)
 
@@ -183,6 +191,7 @@ class Game():
         # if current_player is out of the game, go to the previous player
         if self.get_current_player().cup == []:
             self.set_previous_player()
+
 
     # returns the number of active players
     def players_left(self):
@@ -271,7 +280,7 @@ class Game():
 
     def make_safest_move(self):
         """
-        Update the game state by making the move with highest probability of success
+        Make the move with highest probability of success
 
         Note:
             dudo_dial is used to determine dudo's success, but this feature is
@@ -395,7 +404,7 @@ def get_all_bets(dice_count, cup, bet_state, palifico=False):
         prob = get_probability(dice_count, cup, Bet(die_number, quantity + 1))
         move_list.append((Bet(die_number, quantity + 1), prob))
 
-    # at this point, stop if it's a palifico round.
+    # In palifico rounds, return here to avoid bets that change the die number
     if palifico:
         return move_list
 
@@ -432,7 +441,7 @@ class Error(Exception):
 
 
 class BetError(Error):
-    """Exception raised for errors in the input to the make_bet method
+    """Exception raised when an illegal bet is attempted
 
     Attributes:
         message -- explanation of the error
@@ -443,7 +452,8 @@ class BetError(Error):
 
 
 class MoveError(Error):
-    """Exception raised when an illegal move is attempted (ex. dudo on first move)
+    """Exception raised when an illegal move is attempted
+        For example, a dudo call on the first turn of a round
 
     Attributes:
         message -- explanation of the error
