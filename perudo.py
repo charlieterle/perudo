@@ -12,6 +12,7 @@ DICE_PER_PLAYER = 5
 # Constant to "dial in" the dudo calls so that their predicted success
 # rate is close to their actual success rate
 # See probability.txt for a complete explanation.
+
 # This feature will be refined in the future
 DUDO_DIAL = .22
 
