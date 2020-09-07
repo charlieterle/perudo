@@ -66,4 +66,4 @@ def simulator(player_count, num_trials):
         f"Avg number of bets per round: {sum(bet_numbers) / num_trials}")
 
 # change the arguments below to desired player count and number of games
-simulator(6, 100)
+simulator(6, 1000)
