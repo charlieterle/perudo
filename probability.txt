@@ -103,3 +103,13 @@ in play. Thus, having a single dudo_dial for an entire game is not ideal,
 because as players drop out, the actual probability of success for a dudo drops.
 However, for now I have settled with this "blunt weapon", and I plan to make
 the dudo dial a more in-depth calculation.
+
+-----------------------------------------------------------
+
+Dudo dial update (Sep 14, 2020):
+
+After creating the newer simulation files (dice_ratio_simulation.py and
+inter_player_simulation.py) I have gathered much more data connected to the
+success of dudo calls relative to players' dice counts. I have added plots
+created from these simulations to the repository, which will inform my creation
+of a more sophisticated dudo dial.
