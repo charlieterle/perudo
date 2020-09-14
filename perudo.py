@@ -89,11 +89,9 @@ class Game():
                             self.get_current_player().cup, None)
         self.palifico = False
 
-
     # syntactic sugar for getting the current Player object
     def get_current_player(self):
         return self.players[self.current_player]
-
 
     # make a bet
     def make_bet(self, num, total):
@@ -153,7 +151,6 @@ class Game():
                                         self.get_current_player().cup,
                                         self.current_bet)
 
-
     # start a new round
     def start_new_round(self):
         for p in self.players:
@@ -170,8 +167,7 @@ class Game():
                                         self.get_current_player().cup,
                                         None)
 
-
-    # move the current_player index to the next player
+    # set the current_player attribute to the next player
     def set_next_player(self):
         if self.current_player == len(self.players) - 1:
             self.current_player = 0
@@ -181,8 +177,7 @@ class Game():
         if self.get_current_player().cup == []:
             self.set_next_player()
 
-
-    # move the current_player index to the previous player
+    # set the current_player attribute to the previous player
     def set_previous_player(self):
         if self.current_player == 0:
             self.current_player = len(self.players) - 1
@@ -192,7 +187,6 @@ class Game():
         if self.get_current_player().cup == []:
             self.set_previous_player()
 
-
     # returns the number of active players
     def players_left(self):
         count = 0
@@ -200,7 +194,6 @@ class Game():
             if player.cup != []:
                 count += 1
         return count
-
 
     # call dudo, ending the round, or potentially ending the game
     def dudo(self):
@@ -255,7 +248,6 @@ class Game():
 
         self.start_new_round()
 
-
     def print_all_moves(self):
         """
         Print the probability of each possible move succeeding
@@ -277,16 +269,8 @@ class Game():
             prob = bet_prob[1] * 100
             print(f"{bet_prob[0]}: {prob:.1f}%")
 
-
+    # make the move with the highest probability of success
     def make_safest_move(self):
-        """
-        Make the move with highest probability of success
-
-        Note:
-            dudo_dial is used to determine dudo's success, but this feature is
-            a work in progress. See a full explanation in probability.txt
-        """
-
         highest_prob = 0
         best_move = None
         for move in self.move_list:
