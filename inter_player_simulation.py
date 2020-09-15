@@ -127,29 +127,40 @@ def simulator(player_count, num_trials, num_intervals,
     interval_markers = []
     r = min_ratio + step / 2
     for i in range(num_intervals):
-        interval_markers.append(r)
+        if predicted[i] != None:
+            interval_markers.append(r)
         r += step
 
-    # make linear regression line for the actual dudo success rates
-    coef = np.polyfit(interval_markers, actual, 1)
-    linreg_func = np.poly1d(coef)
+    while True:
+        try:
+            predicted.remove(None)
+            actual.remove(None)
+        except ValueError:
+            break
 
-    # plot all collected data and linear regression line
+    # plot all collected data
     plt.plot(interval_markers, predicted, "go",  \
         label = "Predicted success rate")
     plt.plot(interval_markers, actual, "mo",  \
         label = "Actual success rate")
-    plt.plot(interval_markers, linreg_func(interval_markers), "--b")
     plt.axis([min_ratio - .1, max_ratio + .1, -.1, 1.1])
     plt.ylabel("Dudo Success Rate")
     plt.xlabel("Dice Count Ratio between players (Offensive Player:Defensive Player)")
     plt.title("Dudo success rates grouped by dice count\n" +
             "ratios between the two players involved\n" +
             "(All Dice counts except Offensive Player w/ 1 die)")
+
+    # make linear regression line for the actual dudo success rates
+    coef = np.polyfit(interval_markers, actual, 1)
+    linreg_func = np.poly1d(coef)
+    plt.plot(interval_markers, linreg_func(interval_markers), "--b",  \
+        label = f"Regression Slope = {coef[0]:.4f}, Intercept = {coef[1]:.3f}")
+
+    # show plot
     plt.legend(loc = "best")
     plt.show()
 
 
 # simulator(player_count, num_trials, num_intervals,
 #           offensive_cup_sizes, defensive_cup_sizes)
-simulator(6, 1000, 5, [2, 3, 4, 5], [1, 2, 3, 4, 5])
+simulator(6, 20000, 100, [2, 3, 4, 5], [1, 2, 3, 4, 5])
