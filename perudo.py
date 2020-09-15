@@ -248,6 +248,25 @@ class Game():
 
         self.start_new_round()
 
+    # make the move with the highest probability of success
+    def make_safest_move(self):
+        highest_prob = 0
+        best_move = None
+        for move in self.move_list:
+            if move[1] >= highest_prob:
+                highest_prob = move[1]
+                best_move = move[0]
+
+        if best_move == "Dudo":
+            self.dudo()
+
+            # The following line is included for the simulation file to gather
+            # data about forecasted dudo success vs. actual dudo success
+            return highest_prob
+
+        else:
+            self.make_bet(best_move.num, best_move.total)
+
     def print_all_moves(self):
         """
         Print the probability of each possible move succeeding
@@ -268,25 +287,6 @@ class Game():
         for bet_prob in self.move_list:
             prob = bet_prob[1] * 100
             print(f"{bet_prob[0]}: {prob:.1f}%")
-
-    # make the move with the highest probability of success
-    def make_safest_move(self):
-        highest_prob = 0
-        best_move = None
-        for move in self.move_list:
-            if move[1] >= highest_prob:
-                highest_prob = move[1]
-                best_move = move[0]
-
-        if best_move == "Dudo":
-            self.dudo()
-
-            # The following line is included for the simulation file to gather
-            # data about forecasted dudo success vs. actual dudo success
-            return highest_prob
-
-        else:
-            self.make_bet(best_move.num, best_move.total)
 
 
 def get_probability(dice_count, player_cup, a_bet, palifico=False):

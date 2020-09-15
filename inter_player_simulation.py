@@ -152,4 +152,6 @@ def simulator(player_count, num_trials, num_intervals,
 
 # simulator(player_count, num_trials, num_intervals,
 #           offensive_cup_sizes, defensive_cup_sizes)
+# NOTE due to the linear regression line, this function may not work with
+# values of num_intervals that are greater than 5. I will work to fix this ASAP
 simulator(6, 1000, 5, [2, 3, 4, 5], [1, 2, 3, 4, 5])

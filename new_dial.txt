@@ -1,0 +1,48 @@
+Observations with regard to new simulation data:
+
+CURRENT PLAYER : WHOLE TABLE
+
+When the current player has 1 die, the dudo success rate is 100%. Always.
+
+Current player dice count: 2 -> actual success rate is about .2 lower for
+the majority of play situations
+
+Dice count 3 -> actual success rate is more like .15 lower than predicted
+success rate, except with very low dice ratios, then it's more like .2
+
+dice count 5 -> actual success rate close to predicted success rate, unless
+dice ratio is low (i.e. beginning of game). Also low actual success rate if
+the player has a very high dice ratio (i.e. end of game, only 2 players
+remaining.)
+
+
+
+PREVIOUS PLAYER : WHOLE TABLE
+
+When the previous player has 1 die, the dudo success rate is on average
+about .05 above the predicted rate. Dudo success rate is very high at
+extremely low dice ratios, which isn't surprising.
+
+Previous player dice count: 2 -> Actual success is quite close to predicted
+success, except at low ratios, where dudo is much less successful. This is
+because the low ratios mean that there are still lots of dice left, and the
+people calling dudo therefore don't know as much as they would if the total
+dice count were lower.
+
+Dice count 3: Same as dice count 2
+
+Dice count 5: Same as dice count 3
+
+
+
+INTER PLAYER RATIO
+(Offensive : Defensive)
+
+Dudo is clearly more successful when the defensive player has fewer dice,
+and less successful when the defensive player has more dice. Unless the
+offensive player has 1 die.
+
+By using all dice counts except for (offense: 1), a rather linear-looking
+relationship appears. for the ratio .4, dudo success is .38, and for the
+ratio 5, dudo success is .8. Therefore, the relationship is
+P(dudo success) = 
