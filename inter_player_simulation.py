@@ -163,4 +163,4 @@ def simulator(player_count, num_trials, num_intervals,
 
 # simulator(player_count, num_trials, num_intervals,
 #           offensive_cup_sizes, defensive_cup_sizes)
-simulator(6, 20000, 100, [2, 3, 4, 5], [1, 2, 3, 4, 5])
+simulator(6, 1000, 100, [2, 3, 4, 5], [1, 2, 3, 4, 5])

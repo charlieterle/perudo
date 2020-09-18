@@ -13,18 +13,18 @@ def main():
     # get the total dice count and the number of dice in the player's cup
     while True:
         try:
-            dice_count = int(input("How many dice are in play, "\
+            total_dice_count = int(input("How many dice are in play, "\
                             "including yours?\n"))
-            dice_in_cup = int(input("How many dice are in your own cup?\n"))
+            your_dice_count = int(input("How many dice are in your own cup?\n"))
         except ValueError:
             print("You must enter a numeric value.")
             continue
-        if dice_count < 1 or dice_in_cup < 1:
+        if total_dice_count < 1 or your_dice_count < 1:
             print("You must enter positive integers only.")
             continue
         break
 
-    # get all of the die values
+    # get all of the die values in current player's cup
     first_attempt = True
     while True:
         if first_attempt:
@@ -32,7 +32,7 @@ def main():
         else:
             print("Please re-enter the value of each die, one by one:")
         cup = []
-        for i in range(dice_in_cup):
+        for i in range(your_dice_count):
             try:
                 die = int(input())
             except ValueError:
@@ -41,7 +41,7 @@ def main():
                 break
             cup.append(die)
         # make sure all die values were entered
-        if len(cup) != dice_in_cup:
+        if len(cup) != your_dice_count:
             continue
         # make sure all die values are valid
         if all(val > 0 and val <= perudo.DIE_SIDES for val in cup):
@@ -52,6 +52,7 @@ def main():
             first_attempt = False
             continue
 
+    # Determine whether bet exists, and if so, get the quantity and die number
     while True:
         bet_exists = input("Is there a bet in play already? "\
                             "Enter 'y' for yes, 'n' for no.\n")
@@ -62,6 +63,7 @@ def main():
             bet = None
             break
         else:
+            # Get info about current bet
             while True:
                 try:
                     bet_num = int(input("What is the die value of the "\
@@ -81,15 +83,55 @@ def main():
                 except ValueError:
                     print("You must enter a number.")
                     continue
-                if bet_total < 1 or bet_total > dice_count:
+                if bet_total < 1 or bet_total > total_dice_count:
                     print("The quantity must be greater than 0 and less than "\
-                            f"or equal to {dice_count}.")
+                            f"or equal to {total_dice_count}.")
                     continue
                 break
             bet = perudo.Bet(bet_num, bet_total)
+            # Get dice count of previous player
+            while True:
+                try:
+                    previous_dice_count = int(input("How many dice are in the "\
+                                    "previous player's cup?\n"))
+                except ValueError:
+                    print("You must enter a numeric value.")
+                    continue
+                if previous_dice_count < 1:
+                    print("You must enter positive integers only.")
+                    continue
+                break
             break
 
-    move_list = perudo.get_all_bets(dice_count, cup, bet)
+    # Get dice count of next player
+    while True:
+        try:
+            next_dice_count = int(input("How many dice are in the next player's "\
+                                    "cup?\n"))
+        except ValueError:
+            print("You must enter a numeric value.")
+            continue
+        if next_dice_count < 1:
+            print("You must enter positive integers only.")
+            continue
+        break
+
+    # Determine whether palifico or not
+    while True:
+        palifico = input("Is it a Palifico round? "\
+                            "Enter 'y' for yes, 'n' for no.\n")
+        if palifico not in ["y", "n", "Y", "N"]:
+            print("You must enter either 'y' or 'n'")
+            continue
+        if palifico in ["n", "N"]:
+            palifico = False
+            break
+        else:
+            palifico = True
+            break
+
+    move_list = perudo.get_all_bets(total_dice_count, previous_dice_count,  \
+                                    next_dice_count, cup, bet, palifico)
 
     print("Potential moves and probabilities of success:")
 

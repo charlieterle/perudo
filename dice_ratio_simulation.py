@@ -82,7 +82,9 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
             if previous_player != None:
                 previous_cup_len = len(my_game.players[previous_player].cup)
 
-            # This will mutate the state of my_game, including current_player
+            # This will update the state of my_game, including current_player
+            # When a dudo is called, make_safest_move returns a float that
+            # represents the calculated probability of success of that call.
             safest_move = my_game.make_safest_move()
 
             # when dudo is called, add data to the lists declared above
@@ -111,9 +113,6 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
                         current_actual[current_bucket].append(0)
                         current_predicted[current_bucket].append(safest_move)
 
-                    # note: safest_move is the calculated
-                    # probability of a dudo call succeeding
-
                 previous_player = None
 
             # in this case, dudo wasn't called, so just go to the next turn
@@ -124,6 +123,8 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
     # by taking the average of each sub-list
     for i in range(num_intervals):
         previous_bucket_size = len(previous_actual[i])
+        # If the list is empty, there were no dudo calls in that ratio range,
+        # and therefore no data.
         if previous_bucket_size != 0:
             previous_predicted[i] = sum(previous_predicted[i]) / previous_bucket_size
             previous_actual[i] = sum(previous_actual[i]) / previous_bucket_size
@@ -164,8 +165,7 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
         label = "Avg. Actual success rate of dudo")
     plt.axis([min_ratio, max_ratio, -.1, 1.1])
     plt.ylabel("Success Rate")
-    plt.xlabel("Approximate Dice Count Ratio of Previous Player to Whole Table\n" +
-                "(Previous Player Dice Count = 2, 3, 4, or 5)")
+    plt.xlabel("Approximate Dice Count Ratio of Previous Player to Whole Table")
     plt.title("Success rate of dudo calls with respect to the\n" +
             "dice count ratio of the previous player to the whole table")
     plt.legend(loc = "best")
@@ -178,8 +178,7 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
         label = "Avg. Actual success rate of dudo")
     plt.axis([min_ratio, max_ratio, -.1, 1.1])
     plt.ylabel("Success Rate")
-    plt.xlabel("Approximate Dice Count Ratio of Current Player to Whole Table\n" +
-                "(Current Player Dice Count = 2, 3, 4, or 5)")
+    plt.xlabel("Approximate Dice Count Ratio of Current Player to Whole Table")
     plt.title("Success rate of dudo calls with respect to the\n" +
             "dice count ratio of the current player to the whole table\n")
     plt.legend(loc = "best")
@@ -187,4 +186,4 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
 
 
 # simulator(player_count, num_trials, num_intervals, cup_sizes)
-simulator(6, 10000, 200, [2, 3, 4, 5])
+simulator(6, 1000, 200, [1, 2, 3, 4, 5])

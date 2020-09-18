@@ -90,26 +90,37 @@ the actual success rate was only about 42%. These numbers apply to games with
 To use the dudo dial, I use the formula P(dudo) = 1 - dudo_dial - P(bet)
 This formula just brings down the calculated probability of a dudo call to be
 more in line with what is likely, assuming the previous player made a safe bet,
-i.e., their bet reflects the dice they have in their cup. For the above-mentioned
-scenario, a dudo dial of .22 will make the calculated and actual success rates
-for dudo calls converge to about 52%.
+i.e., their bet reflects the dice they have in their cup.
 
-After more simulations with different numbers of players, I realized that
-the actual success rate of dudo calls increases when there are more players,
-and decreases when there are few players. After seeing this, I realized this
-occurs because bets can be made with more confidence when there are fewer
-players because each player holds a larger share of the total number of dice
-in play. Thus, having a single dudo_dial for an entire game is not ideal,
-because as players drop out, the actual probability of success for a dudo drops.
-However, for now I have settled with this "blunt weapon", and I plan to make
-the dudo dial a more in-depth calculation.
+The dudo dial was originally a constant of .22, which brought the average
+probability calculation of dudo success in line with the actual measured success
+rate. However, I realized this was too blunt a tool to make computer players
+that would act intelligently, so I decided to make the dudo dial a function
+that returns different values depending on the ratio of dice counts between
+players. Below, I have outlined some of the observations that shaped the dudo
+dial function, and how it could be improved even more.
 
------------------------------------------------------------
+------------------------------------------------------------
 
-Dudo dial update (Sep 14, 2020):
+Observations gleaned from simulations that measure dice counts and ratios:
 
-After creating the newer simulation files (dice_ratio_simulation.py and
-inter_player_simulation.py) I have gathered much more data connected to the
-success of dudo calls relative to players' dice counts. I have added plots
-created from these simulations to the repository, which will inform my creation
-of a more sophisticated dudo dial.
+When the player calling dudo has 1 die, the dudo success rate is always 100%.
+
+Looking at dice ratios between players, it's evident that dudo is more
+successful when the defensive player has fewer dice,
+and less successful when the defensive player has more dice, unless the
+offensive player has 1 die, as mentioned above.
+
+By excluding situations where the offensive player has one die, a linear-looking
+relationship appears. Using the linear regression graph in
+inter_player_simulation.py, we can extract this regression line:
+P(dudo success) = ratio * .09 + .33
+
+This relationship assumes that the calculated dudo success rate is
+approximately steady at about .62.
+
+I used this linear relationship to create the dudo dial function, but it is
+still incomplete, as it does not address the situations where the offensive
+player has one die, and yet has a 100% dudo success rate. I am currently
+experimenting with solutions to this problem to bring the predicted success rate
+in line with the observed success rate.
