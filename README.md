@@ -22,4 +22,4 @@ I am planning to include an option to play with "calza" rules at a later date. S
 
 # Dudo Dial
 
-  - the dudo_dial feature is currently implemented to aid computer players in calculating the correct probability of dudo calls succeeding, but it doesn't work well in all situations. Most notably, it does not currently take into account that the previous player's bet was made with the previous player's cup of dice in mind, and therefore is likely to reflect which dice the previous player has. Therefore, I am currently studying how the probabilities can be tweaked so that the computer players make smarter moves. I will post graphs with data on this topic soon.
+  - the dudo_dial feature is currently implemented to aid computer players in calculating the correct probability of dudo calls succeeding, but it doesn't work well in all situations. See probability.txt for a more in-depth explanation.
