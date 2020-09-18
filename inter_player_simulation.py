@@ -131,15 +131,15 @@ def simulator(player_count, num_trials, num_intervals,
         r += step
 
     # make linear regression line for the actual dudo success rates
-    coef = np.polyfit(interval_markers, actual, 1)
-    linreg_func = np.poly1d(coef)
+    # coef = np.polyfit(interval_markers, actual, 1)
+    # linreg_func = np.poly1d(coef)
+    # plt.plot(interval_markers, linreg_func(interval_markers), "--b")
 
     # plot all collected data and linear regression line
     plt.plot(interval_markers, predicted, "go",  \
         label = "Predicted success rate")
     plt.plot(interval_markers, actual, "mo",  \
         label = "Actual success rate")
-    plt.plot(interval_markers, linreg_func(interval_markers), "--b")
     plt.axis([min_ratio - .1, max_ratio + .1, -.1, 1.1])
     plt.ylabel("Dudo Success Rate")
     plt.xlabel("Dice Count Ratio between players (Offensive Player:Defensive Player)")
@@ -154,4 +154,4 @@ def simulator(player_count, num_trials, num_intervals,
 #           offensive_cup_sizes, defensive_cup_sizes)
 # NOTE due to the linear regression line, this function may not work with
 # values of num_intervals that are greater than 5. I will work to fix this ASAP
-simulator(6, 1000, 5, [2, 3, 4, 5], [1, 2, 3, 4, 5])
+simulator(6, 300, 100, [2, 3, 4, 5], [1, 2, 3, 4, 5])

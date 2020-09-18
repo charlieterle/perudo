@@ -165,8 +165,7 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
         label = "Avg. Actual success rate of dudo")
     plt.axis([min_ratio, max_ratio, -.1, 1.1])
     plt.ylabel("Success Rate")
-    plt.xlabel("Approximate Dice Count Ratio of Previous Player to Whole Table\n" +
-                "(Previous Player Dice Count = 2, 3, 4, or 5)")
+    plt.xlabel("Approximate Dice Count Ratio of Previous Player to Whole Table")
     plt.title("Success rate of dudo calls with respect to the\n" +
             "dice count ratio of the previous player to the whole table")
     plt.legend(loc = "best")
@@ -179,8 +178,7 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
         label = "Avg. Actual success rate of dudo")
     plt.axis([min_ratio, max_ratio, -.1, 1.1])
     plt.ylabel("Success Rate")
-    plt.xlabel("Approximate Dice Count Ratio of Current Player to Whole Table\n" +
-                "(Current Player Dice Count = 2, 3, 4, or 5)")
+    plt.xlabel("Approximate Dice Count Ratio of Current Player to Whole Table")
     plt.title("Success rate of dudo calls with respect to the\n" +
             "dice count ratio of the current player to the whole table\n")
     plt.legend(loc = "best")
@@ -188,4 +186,4 @@ def simulator(player_count, num_trials, num_intervals, cup_sizes):
 
 
 # simulator(player_count, num_trials, num_intervals, cup_sizes)
-simulator(6, 10000, 200, [2, 3, 4, 5])
+simulator(6, 1000, 200, [1, 2, 3, 4, 5])

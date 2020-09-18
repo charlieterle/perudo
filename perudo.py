@@ -13,9 +13,6 @@ DICE_PER_PLAYER = 5
 # rate is close to their actual success rate
 # See probability.txt for a complete explanation.
 
-# This feature will be refined in the future
-DUDO_DIAL = .22
-
 class Player():
     """
     A single player in a game of Perudo
@@ -84,14 +81,42 @@ class Game():
         self.current_bet = None
         self.current_player = random.randint(0, player_count - 1)
         self.round = 1
+        self.max_player_count = player_count
         self.dice_count = player_count * DICE_PER_PLAYER
-        self.move_list = get_all_bets(self.dice_count, \
-                            self.get_current_player().cup, None)
+        self.move_list = get_all_bets(self.dice_count,  \
+                                        len(self.get_previous_player().cup),  \
+                                        len(self.get_next_player().cup),  \
+                                        self.get_current_player().cup,  \
+                                        None)
         self.palifico = False
 
     # syntactic sugar for getting the current Player object
     def get_current_player(self):
         return self.players[self.current_player]
+
+    def get_previous_player(self):
+        player_num = self.current_player - 1
+        while True:
+            if player_num < 0:
+                player_num = self.max_player_count - 1
+                continue
+            if self.players[player_num].cup == []:
+                player_num -= 1
+                continue
+            break
+        return self.players[player_num]
+
+    def get_next_player(self):
+        player_num = self.current_player + 1
+        while True:
+            if player_num > self.max_player_count - 1:
+                player_num = 0
+                continue
+            if self.players[player_num].cup == []:
+                player_num += 1
+                continue
+            break
+        return self.players[player_num]
 
     # make a bet
     def make_bet(self, num, total):
@@ -142,14 +167,17 @@ class Game():
         self.current_bet = Bet(num, total)
         self.set_next_player()
         if self.palifico:
-            self.move_list = get_all_bets(self.dice_count,
-                                        self.get_current_player().cup,
-                                        self.current_bet,
-                                        palifico=True)
+            self.move_list = get_all_bets(self.dice_count,  \
+                                            len(self.get_previous_player().cup),  \
+                                            len(self.get_next_player().cup),  \
+                                            self.get_current_player().cup,  \
+                                            self.current_bet, palifico=True)
         else:
-            self.move_list = get_all_bets(self.dice_count,
-                                        self.get_current_player().cup,
-                                        self.current_bet)
+            self.move_list = get_all_bets(self.dice_count,  \
+                                            len(self.get_previous_player().cup),  \
+                                            len(self.get_next_player().cup),  \
+                                            self.get_current_player().cup,  \
+                                            self.current_bet)
 
     # start a new round
     def start_new_round(self):
@@ -158,14 +186,17 @@ class Game():
         self.current_bet = None
         self.round += 1
         if self.palifico:
-            self.move_list = get_all_bets(self.dice_count,
-                                        self.get_current_player().cup,
-                                        None,
-                                        palifico=True)
+            self.move_list = get_all_bets(self.dice_count,  \
+                                            len(self.get_previous_player().cup),  \
+                                            len(self.get_next_player().cup),  \
+                                            self.get_current_player().cup,  \
+                                            None, palifico=True)
         else:
-            self.move_list = get_all_bets(self.dice_count,
-                                        self.get_current_player().cup,
-                                        None)
+            self.move_list = get_all_bets(self.dice_count,  \
+                                            len(self.get_previous_player().cup),  \
+                                            len(self.get_next_player().cup),
+                                            self.get_current_player().cup,
+                                            None)
 
     # set the current_player attribute to the next player
     def set_next_player(self):
@@ -292,11 +323,14 @@ class Game():
 def get_probability(dice_count, player_cup, a_bet, palifico=False):
     """
     Calculate the probability of a single bet succeeding
+        (Note: This calculation doesn't use dudo_dial, so it is a naive
+        measure of the actual probability. dudo_dial is used to adjust the
+        probability measurement in the get_all_bets method)
 
     Arguments:
-        dice_count - int, the total number of dice in play
-        player_cup - list of ints, the current dice values a player has
-        current_bet - bet object, with attributes num and total
+        dice_count (int) : the total number of dice in play
+        player_cup (list of ints) : the current player's cup
+        a_bet (bet object) : a betting state (num, quantity)
 
     Named argument:
         palifico - set to True when palifico rules are in play
@@ -304,6 +338,7 @@ def get_probability(dice_count, player_cup, a_bet, palifico=False):
     returns a float
     """
 
+    # calculate how many of the bet value the player has
     die_num = a_bet.num
     hand_total = 0
     for d in player_cup:
@@ -330,17 +365,34 @@ def get_probability(dice_count, player_cup, a_bet, palifico=False):
     return total_prob
 
 
-def get_all_bets(dice_count, cup, bet_state, palifico=False):
+def dudo_dial(ratio):
     """
-    Retrieve all potential new bets and their probabilities
+    Determine how far to adjust naive probability calculation for bets
 
     Arguments:
-        dice_count - an int representing the total number of dice in play
-        cup - a list of ints representing the current player's cup
-        bet_state - a Bet object
+        ratio (float) : dice ratio between two adjacent players
+            -ALWAYS OF THE FORM later/earlier.
+                i.e. if the current betting player has 5 dice, and the next
+                    player has 2 dice, the ratio between them is 2/5, NOT 5/2
 
-    Named argument:
-        palifico - set to True when palifico rules are in play
+    returns a float
+    """
+
+    return ratio * .09 - .29
+
+
+def get_all_bets(total_dice_count, previous_dice_count,
+                next_dice_count, cup, bet_state, palifico=False):
+    """
+    Retrieve all potential new bets and their probabilities of success
+
+    Arguments:
+        total_dice_count (int) : the total number of dice in play
+        previous_dice_count (int) : the previous player's cup size
+        next_dice_count (int) : the next player's cup size
+        cup (list of ints) : the current player's cup
+        bet_state (Bet object) : the current bet state
+        palifico (Bool) : set to True when palifico rules are in play
 
     returns a list of tuples of form (b, prob),
         where b is a Bet object and prob is a float
@@ -351,41 +403,51 @@ def get_all_bets(dice_count, cup, bet_state, palifico=False):
     # if it is the first turn, create an initial betting scenario
     if bet_state == None:
 
-        # initialize quantity at a moderately safe level
-        quantity = round(dice_count / DIE_SIDES - 1)
+        # initialize bet quantity at a moderately safe level
+        quantity = round(total_dice_count / DIE_SIDES - 1)
 
         # in case there are very few dice in play, make the minimum quantity 1
         if quantity <= 0:
             quantity = 1
 
         # get probability of success for a bet where num = 1
-        prob = get_probability(dice_count, cup, Bet(1, quantity))
+        prob = get_probability(total_dice_count, cup, Bet(1, quantity))
         move_list.append((Bet(1, quantity), prob))
 
         # bets for all num > 1
         if not palifico:
-            quantity = round(2 * dice_count / DIE_SIDES - 1)
+            quantity = round(2 * total_dice_count / DIE_SIDES - 1)
         if quantity <= 0:
             quantity = 1
         for num in range(2, DIE_SIDES + 1):
-            prob = get_probability(dice_count, cup, Bet(num, quantity))
+            prob = get_probability(total_dice_count, cup,  \
+                                    Bet(num, quantity), palifico)
             move_list.append((Bet(num, quantity), prob))
 
         return move_list
 
-    # Now it is not the first turn,
-    # so get the next bets with bet_state in mind
+    # Calculate dudo_dial for a dudo call, using previous player's dice count
+    dudo_ratio = len(cup) / previous_dice_count
+    dial_1 = dudo_dial(dudo_ratio)
+
+    # Get dudo probability of success
+    dudo_prob = 1 - get_probability(total_dice_count, cup, bet_state) + dial_1
+    move_list.append(("Dudo", dudo_prob))
+
+    # Calculate dudo_dial for bets, using next player's dice count
+    betting_ratio = next_dice_count / len(cup)
+    dial_2 = dudo_dial(dudo_ratio)
+
+    # Extract bet state into variables
     die_number = bet_state.num
     quantity = bet_state.total
 
-    # first, probability of success of dudo
-    dudo_prob = 1 - DUDO_DIAL - get_probability(dice_count, cup, bet_state)
-    move_list.append(("Dudo", dudo_prob))
-
-    # bet of total += 1. Note: if quantity == dice_count (unlikely),
+    # bet of total += 1. Note: if quantity == total_dice_count (unlikely),
     # then this bet always has a probability of 0, so it will be skipped.
-    if quantity != dice_count:
-        prob = get_probability(dice_count, cup, Bet(die_number, quantity + 1))
+    if quantity != total_dice_count:
+        prob = get_probability(total_dice_count, cup,  \
+                                Bet(die_number, quantity + 1), palifico)  \
+                - dial_2
         move_list.append((Bet(die_number, quantity + 1), prob))
 
     # In palifico rounds, return here to avoid bets that change the die number
@@ -397,23 +459,25 @@ def get_all_bets(dice_count, cup, bet_state, palifico=False):
     if die_number == 1:
         q = quantity * 2 + 1
         for num in range(2, DIE_SIDES + 1):
-            prob = get_probability(dice_count, cup, Bet(num, q))
+            prob = get_probability(total_dice_count, cup,  \
+                                    Bet(num, q))  \
+                    - dial_2
             move_list.append((Bet(num, q), prob))
-
         return move_list
 
-    # get probability of success when num = 1 and total = total / 2
+    # get probability of success when changing num to 1
     if quantity % 2 == 1:
         q = int((quantity + 1) / 2)
     else:
         q = int(quantity / 2)
-    prob = get_probability(dice_count, cup, Bet(1, q))
+    prob = get_probability(total_dice_count, cup, Bet(1, q))
     move_list.append((Bet(1, q), prob))
 
     # get probability of success for all bets created by adding to num
     if die_number != DIE_SIDES:
         for num in range(die_number + 1, DIE_SIDES + 1):
-            prob = get_probability(dice_count, cup, Bet(num, quantity))
+            prob = get_probability(total_dice_count, cup,  \
+                                    Bet(num, quantity))
             move_list.append((Bet(num, quantity), prob))
 
     return move_list

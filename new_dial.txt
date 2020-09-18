@@ -43,6 +43,12 @@ and less successful when the defensive player has more dice. Unless the
 offensive player has 1 die.
 
 By using all dice counts except for (offense: 1), a rather linear-looking
-relationship appears. for the ratio .4, dudo success is .38, and for the
-ratio 5, dudo success is .8. Therefore, the relationship is
-P(dudo success) = 
+relationship appears. Using the linear regression graph, we can see that
+the relationship is approximately the following:
+P(dudo success) = ratio * .09 + .33 
+
+This relationship assumes that the calculated dudo success rate is
+approximately steady at about .62.
+
+Therefore, I will implement dudo dial to calculate dice ratios and adjust
+the calculation of success accordingly.
