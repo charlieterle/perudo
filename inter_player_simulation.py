@@ -6,6 +6,7 @@
 import perudo
 from matplotlib import pyplot as plt
 import numpy as np
+from math import sqrt
 
 def simulator(player_count, num_trials, num_intervals,
                             offensive_cup_sizes, defensive_cup_sizes):
@@ -13,19 +14,13 @@ def simulator(player_count, num_trials, num_intervals,
     Plot statistics on dudo calls based on multiple simulated games of Perudo
 
     Arguments:
-        player_count (int) - number of players
-        num_trials (int) - number of games to be simulated
-        num_intervals (int) - determines how many intervals to include on the
-            horizontal axis of the plots.
-        offensive_cup_sizes (list of ints) - list of cup sizes that you want to be
-            counted during data collection. For example, passing [1, 2] will
-            only count dudo calls when the offensive player has one or
-            two dice in their cup at the time of calling dudo.
-        defensive_cup_sizes (list of ints) - same as offensive_cup_sizes, but for
-            the defensive player
+        -- player_count (int) - number of players
+        -- num_trials (int) - number of games to be simulated
+        -- num_intervals (int) - # of intervals on the horizontal axis of plots
+        -- offensive_cup_sizes (list of ints) - list of cup sizes to be counted during data collection. For example, passing [1, 2] will only count dudo calls when the offensive player has one or two dice in their cup at the time of calling dudo.
+        -- defensive_cup_sizes (list of ints) - same as offensive_cup_sizes, but for the defensive player
 
-    Note: Plots will have a horizontal axis related to ratio of dice counts
-        between players
+    Note: Horizontal axis of plot is a ratio of dice counts, offensive/defensive
     """
 
     dice_per_player = perudo.DICE_PER_PLAYER
@@ -58,18 +53,17 @@ def simulator(player_count, num_trials, num_intervals,
     # which the predicted rates of dudo and actual dudo outcomes will be placed
     # based on the ratio of dice counts between players
     predicted, actual = [], []
+    correct, incorrect = 0, 0  # counts how many dudo calls were correct
 
     for i in range(num_intervals):
         predicted.append([])
         actual.append([])
 
-    # start the simulation
+    # run the simulations
     for i in range(num_trials):
         my_game = perudo.Game(player_count)
         defensive_player = None
 
-        # Use the dice_count code on the following line to manipulate how
-        # large the game is when data is collected (i.e. total dice count)
         while my_game.players_left() > 1:
             betting_player = my_game.current_player
             offensive_cup_len = len(my_game.players[betting_player].cup)
@@ -79,7 +73,7 @@ def simulator(player_count, num_trials, num_intervals,
             # This will mutate the state of my_game, including current_player
             safest_move = my_game.make_safest_move()
 
-            # when dudo is called, add data to the lists declared above
+            # when dudo is called, add data to the predicted/actual lists
             if my_game.current_bet == None:
                 ratio = offensive_cup_len / defensive_cup_len
 
@@ -93,11 +87,12 @@ def simulator(player_count, num_trials, num_intervals,
 
                 # If dudo was successful, append 1 to appropriate buckets,
                 # else append 0
-                if betting_player != my_game.current_player or  \
-                                    my_game.players[defensive_player].cup == []:
+                if betting_player != my_game.current_player or my_game.players[defensive_player].cup == []:
                     actual[bucket].append(1)
+                    correct += 1
                 else:
                     actual[bucket].append(0)
+                    incorrect += 1
 
                 # note: safest_move is the calculated
                 # probability of a dudo call succeeding
@@ -111,15 +106,21 @@ def simulator(player_count, num_trials, num_intervals,
 
     for i in range(num_intervals):
         bucket_size = len(actual[i])
-        if bucket_size != 0:
+        if bucket_size != 0:  # take average of all data points in the bucket
             predicted[i] = sum(predicted[i]) / bucket_size
             actual[i] = sum(actual[i]) / bucket_size
 
+        
         if predicted[i] != []:
+            # uncomment following code to print statistics for each bucket
+            """
             print(f"Interval number {i} statistics:\n")
             print(f"Predicted success: {predicted[i]:.2f}\n"
                 f"Actual success: {actual[i]:.2f}")
             print(f"Sample size: {bucket_size}\n\n")
+            """
+            # comment out following line if above code is in use
+            pass
         else:
             predicted[i], actual[i] = None, None
 
@@ -127,10 +128,12 @@ def simulator(player_count, num_trials, num_intervals,
     interval_markers = []
     r = min_ratio + step / 2
     for i in range(num_intervals):
+        # only plot ratios for which there is actually data
         if predicted[i] != None:
             interval_markers.append(r)
         r += step
 
+    # remove all empty buckets
     while True:
         try:
             predicted.remove(None)
@@ -139,22 +142,29 @@ def simulator(player_count, num_trials, num_intervals,
             break
 
     # plot all collected data
-    plt.plot(interval_markers, predicted, "go",  \
-        label = "Predicted success rate")
-    plt.plot(interval_markers, actual, "mo",  \
-        label = "Actual success rate")
+    plt.plot(interval_markers, predicted, "go", label="Predicted dudo success rate")
+    plt.plot(interval_markers, actual, "mo", label="Actual dudo success rate")
     plt.axis([min_ratio - .1, max_ratio + .1, -.1, 1.1])
     plt.ylabel("Dudo Success Rate")
-    plt.xlabel("Dice Count Ratio between players (Offensive Player:Defensive Player)")
-    plt.title("Dudo success rates grouped by dice count\n" +
-            "ratios between the two players involved\n" +
-            "(All Dice counts except Offensive Player w/ 1 die)")
+    plt.xlabel("Dice Count Ratio between players on a dudo call (Offensive Player:Defensive Player)")
+    plt.title("Avg. dudo success rates by dice count ratios between\n" +
+            f"the two active players ({num_trials} simulated games)\n" +
+            "Dudo dial is a linear value (.09 * dice_ratio - .29)")
 
     # make linear regression line for the actual dudo success rates
     coef = np.polyfit(interval_markers, actual, 1)
     linreg_func = np.poly1d(coef)
-    plt.plot(interval_markers, linreg_func(interval_markers), "--b",  \
-        label = f"Regression Slope = {coef[0]:.4f}, Intercept = {coef[1]:.3f}")
+    plt.plot(interval_markers, linreg_func(interval_markers), "--b", label = f"Regression Slope = {coef[0]:.4f}, Intercept = {coef[1]:.3f}")
+
+    # calculate error between predicted and actual dudo rates
+    sq_error = 0
+    for i in range(len(predicted)):
+        sq_error += ((predicted[i] - actual[i]) * 100) ** 2
+    print(f"Standard deviation of probability prediction = {sqrt(sq_error / len(predicted)):.2f}")
+
+    # print overall dudo success rate & similar stats 
+    print(f"Overall success rate = {(correct * 100 / (correct + incorrect)):.2f}")
+    print(f"({correct} correct dudo calls out of {correct + incorrect})")
 
     # show plot
     plt.legend(loc = "best")

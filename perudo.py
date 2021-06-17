@@ -186,11 +186,7 @@ class Game():
         self.current_bet = None
         self.round += 1
         if self.palifico:
-            self.move_list = get_all_bets(self.dice_count,  \
-                                            len(self.get_previous_player().cup),  \
-                                            len(self.get_next_player().cup),  \
-                                            self.get_current_player().cup,  \
-                                            None, palifico=True)
+            self.move_list = get_all_bets(self.dice_count, len(self.get_previous_player().cup), len(self.get_next_player().cup), self.get_current_player().cup, None, palifico=True)
         else:
             self.move_list = get_all_bets(self.dice_count,  \
                                             len(self.get_previous_player().cup),  \
@@ -371,14 +367,18 @@ def dudo_dial(ratio):
 
     Arguments:
         ratio (float) : dice ratio between two adjacent players
-            -ALWAYS OF THE FORM later/earlier.
-                i.e. if the current betting player has 5 dice, and the next
-                    player has 2 dice, the ratio between them is 2/5, NOT 5/2
+            -ALWAYS OF THE FORM later/earlier (i.e. offense/defense)
+            i.e. if the current betting player has 5 dice, and the next
+            player has 2 dice, the ratio between them is 2/5, NOT 5/2
 
     returns a float
     """
 
+    # makes a linear adjustment to dudo probability based on ratio
     return ratio * .09 - .29
+
+    # makes a flat adjustment to dudo probability (left in for comparison)
+    # return -.22
 
 
 def get_all_bets(total_dice_count, previous_dice_count,
@@ -420,8 +420,7 @@ def get_all_bets(total_dice_count, previous_dice_count,
         if quantity <= 0:
             quantity = 1
         for num in range(2, DIE_SIDES + 1):
-            prob = get_probability(total_dice_count, cup,  \
-                                    Bet(num, quantity), palifico)
+            prob = get_probability(total_dice_count, cup, Bet(num, quantity), palifico)
             move_list.append((Bet(num, quantity), prob))
 
         return move_list
@@ -445,9 +444,7 @@ def get_all_bets(total_dice_count, previous_dice_count,
     # bet of total += 1. Note: if quantity == total_dice_count (unlikely),
     # then this bet always has a probability of 0, so it will be skipped.
     if quantity != total_dice_count:
-        prob = get_probability(total_dice_count, cup,  \
-                                Bet(die_number, quantity + 1), palifico)  \
-                - dial_2
+        prob = get_probability(total_dice_count, cup, Bet(die_number, quantity + 1), palifico) - dial_2
         move_list.append((Bet(die_number, quantity + 1), prob))
 
     # In palifico rounds, return here to avoid bets that change the die number
@@ -459,9 +456,7 @@ def get_all_bets(total_dice_count, previous_dice_count,
     if die_number == 1:
         q = quantity * 2 + 1
         for num in range(2, DIE_SIDES + 1):
-            prob = get_probability(total_dice_count, cup,  \
-                                    Bet(num, q))  \
-                    - dial_2
+            prob = get_probability(total_dice_count, cup, Bet(num, q)) - dial_2
             move_list.append((Bet(num, q), prob))
         return move_list
 
@@ -476,8 +471,7 @@ def get_all_bets(total_dice_count, previous_dice_count,
     # get probability of success for all bets created by adding to num
     if die_number != DIE_SIDES:
         for num in range(die_number + 1, DIE_SIDES + 1):
-            prob = get_probability(total_dice_count, cup,  \
-                                    Bet(num, quantity))
+            prob = get_probability(total_dice_count, cup, Bet(num, quantity))
             move_list.append((Bet(num, quantity), prob))
 
     return move_list
