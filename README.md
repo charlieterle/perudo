@@ -31,3 +31,4 @@ I am planning to include an option to play with "calza" rules at a later date. S
 # Next Steps
 
   There is still more to do to create smarter computer players. I still do not know why the offensive player always wins on their dudo calls if they have just one die. I suspect that I could create a nice dataset from simulated games that could be used to train computer players with some machine learning techniques, but I am not quite capable of that yet. I will look into these points in the future with the aim of creating computer players that always make very smart moves.
+
