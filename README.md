@@ -24,14 +24,14 @@ I am planning to include an option to play with "calza" rules at a later date. S
 
   The dudo dial feature was originally implemented as a constant adjustment to the estimated probability of success of calling dudo in the game. I implemented this because I noticed that the predicted success rate of dudo calls by computer players was around 60% on average, but in reality those calls only succeeded 40-45% of the time. 
   
-  ![DudoDial=0](https://github.com/charlieterle/perudo/tree/master/simulation_graphs/dudodial_zero.png)
+  ![DudoDial=0](https://github.com/charlieterle/perudo/blob/master/simulation_graphs/dudodial_zero.png?raw=true)
   Standard deviation of probability prediction = .15
   Overall success rate = 43.32%
   (10114 correct dudo calls out of 23346)
   
   I pushed out a quick, crude fix by just testing out a bunch of constant values until I found one that seemed to work better than all of the others. It may not look like it improved much, but keep in mind that dice ratios above 1.5, or less than 2/3 are less common than ratios closer to 1. So, the overall accuracy of probability calculations was improved significantly by just using this crude fix.
   
-  ![DudoDial=-.22](https://github.com/charlieterle/perudo/tree/master/simulation_graphs/dudodial_constant.png)
+  ![DudoDial=-.22](https://github.com/charlieterle/perudo/blob/master/simulation_graphs/dudodial_constant.png?raw=true)
   Standard deviation of probability prediction = .12
   Overall success rate = 57.75%
   (14050 correct dudo calls out of 24330)
@@ -40,7 +40,7 @@ I am planning to include an option to play with "calza" rules at a later date. S
 
   Anyhow, as  you can see in the graph above with a constant dudo dial of -.22, the slope of a line fit to the actual success rates of dudo calls is about .09. This means that if the dice count ratio of offense:defense increases by 1, then the dudo call has a 9% greater chance of succeeding. So, I used that slope to create a dudo dial function that simply takes the current offense:defense dice ratio, which players would know in a real game, and multiplies it by .09 and adds a constant. This new dudo dial actually resulted in the overall winning percentage of dudo calls to drop, BUT the probability predictions were much closer to the actual dudo success rate – the standard deviation of average success rates reduced by about 40%, from .12 to .07.
 
-  ![LinearDudoDial](https://github.com/charlieterle/perudo/tree/master/simulation_graphs/dudodial_linear.png)
+  ![LinearDudoDial](https://github.com/charlieterle/perudo/blob/master/simulation_graphs/dudodial_linear.png?raw=true)
   Standard deviation of probability prediction = .067
   Overall success rate = 55.07%
   (14229 correct dudo calls out of 25839)
